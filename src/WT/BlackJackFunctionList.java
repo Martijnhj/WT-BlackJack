@@ -14,6 +14,10 @@ public class BlackJackFunctionList {
                 - Kaarten zitten 1 keer in het spel
                 - Alle kaarten worden getoond
                 - Nieuw spel: random volgorde
+                - Liefst nu al Classes Card en Deck.
+                    - Kaart word een object: Kaart kaart = new Kaart();
+                        - Kan door 52 nummers door te lopen en voor elk getal een waarde en soort kaart toe te voegen.
+                    - Deck leeg array waar kaarten in komen
 
         [[[[[2]]]]]]
             - Keuze tijdens spelen
@@ -31,9 +35,7 @@ public class BlackJackFunctionList {
             - Display van totaal aantal punten
 
         [[[[[[3]]]]]]]
-            - Kaart word een object: Kaart kaart = new Kaart();
-                   - Zou dit kunnen doen door te kiezen van lijst waarden, en daar dan random een waarde in te vullen bij new kaart
-                            Lijst met randomized {1,2,3,4,5,6,7,8,9,10,10,10,11} keer 4. Als je dan dat in vult krijg je een kaart die daar bij past random welke kleur
+
             - Regels volgen
                 -Begin twee kaarten
                 - A's kan 1 of 11 punten zijn. Als boven 21 gaat veranderd dit in 1: 4 + A = 15 (5)
