@@ -6,6 +6,10 @@ public class BlackJackApplication {
 
     static Scanner reader = new Scanner(System.in);
 
+    enum choice {
+        yes, no, card, pass, quit;
+    }
+
     //input arguments that are not reliant on case
     //final static String yesArgument = "^(?i)yes$";
     //final static String noArgument = "^(?i)no$";
@@ -20,7 +24,17 @@ public class BlackJackApplication {
                 -optie 2: lijst met kaarten wordt geschud en dan volledig geprint
                     -of array die twee ints krijgt en die kaarten dan omwisseld
                     -of array die uit 1 ongeschudde pile pakt en naar geschudde pile overzet.!!!!! -> op dit moment lievelings optie
-             - system out van array: dus for (String kaart : Kaarten) { System.out.println(kaart); } */
+             - system out van array: dus for (String kaart : Kaarten) { System.out.println(kaart); }
+
+
+             -------------Maybe use enums to scan for common entry
+
+
+
+
+      */
+
+
 
     public static void main (String[] args) {
 
@@ -43,16 +57,16 @@ public class BlackJackApplication {
         //System.out.print("How much would you like to bet?: ");
         //System.out.println(intScanner());
 
-
-
-
-
     }
+
+
+
 
     Boolean stringScannerYesNo() {
         boolean yesorno = false;
+
         String input = reader.next();
-        while (!input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("no")) {
+        while (!input.equalsIgnoreCase("yes")&& !input.equalsIgnoreCase("no")) {
                 System.out.print("Enter a valid argument.\nThis is BlackJack. Do you want to play? Enter yes or no: ");
                 input = reader.next();
         }

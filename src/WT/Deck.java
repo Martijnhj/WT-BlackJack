@@ -8,15 +8,11 @@ class Deck {
 
     Deck() {
 
-        for (int i = 1; i<53; i++) {
-            if (i<=13) {
-                deck[i-1] = new Card("Clubs", i);
-            } else if (i<=26) {
-                deck[i-1] = new Card("Diamonds", (i-13));
-            } else if (i<=39) {
-                deck[i-1] = new Card("Hearts", (i-26));
-            } else if (i<=52) {
-                deck[i-1] = new Card("Spades", (i-39));
+        int i = 0;
+        for (Card.Suit suit: Card.Suit.values()) {
+            for (Card.cardType type : Card.cardType.values()) {
+                deck[i] = new Card(suit, type);
+                i++;
             }
         }
 
