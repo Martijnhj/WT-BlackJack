@@ -2,49 +2,29 @@ package WT;
 
 class Card {
 
-private String type; //Schoppen, harten etc
-private int value;
-private String card; //1, 2, boer
+private Suit suit; //Schoppen, harten etc
+private cardType card; //1, 2, boer
 
-    Card(String type, int id) {
-        this.type = type;
+enum Suit{
+    Clubs, Diamond, Hearts, Spades
+}
 
-        if (id == 1) {
-            this.value = 11;
-            this.card = "Ace";
-        } else if (id <=10) {
-            this.value = id;
-            this.card = Integer.toString(id);
-        }
-
-        if (id == 11) {
-            this.value = 10;
-            this.card = "Jack";
-        }
-
-        if (id == 12) {
-            this.value = 10;
-            this.card = "Queen";
-        }
-
-        if (id == 13) {
-            this.value = 10;
-            this.card = "King";
-        }
-
+enum cardType{
+    Ace(11), Two(2), Three(3), Four(4), Five(5), Six(6), Seven(7), Eight(8), Nine(9), Ten(10), Jack(10), Queen(10), King(10);
+    int value;
+    cardType(int value) {
+        this.value = value;
     }
+}
 
-    String getType() {
-        return this.type;
-    }
-
-    String getCard() {
-        return this.card;
+    Card(Suit suit , cardType card) {
+        this.suit = suit;
+        this.card = card;
     }
 
 
     @Override
     public String toString() {
-        return this.card + " of " + this.type;
+        return this.card + " of " + this.suit;
     }
 }
