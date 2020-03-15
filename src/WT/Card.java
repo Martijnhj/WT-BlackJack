@@ -22,6 +22,13 @@ enum cardType{
         this.card = card;
     }
 
+    String getCardType() {
+        return this.card.name();
+    }
+
+    int getCardValue() {
+        return this.card.value;
+    }
 
     @Override
     public String toString() {

@@ -67,6 +67,21 @@ public class BlackJackFunctionList {
 
         [[[[[[[[[[[[[Requirements 2]]]]]]]]]]]]]
 
+
+
+            -Scanner voor options:
+                -Card
+                    - Person class. Drawn card enters array called Hand
+                    - Counter to follow which card was drawn last from deck, starting at 0
+                    - Add value to the value counter of a person
+                -Pass
+                    - No more cards are drawn
+                -Quit
+                    - Quit exits entire game
+                -After having passed and round finished, new game begins automatically.
+                    - if deck counter reaches the 52 (51 of array) you want to grab a new shuffled deck and copy it over the current deck.
+
+
      */
 
 }
