@@ -5,6 +5,8 @@ import java.util.Scanner;
 public class BlackJackApplication {
 
     static Scanner reader = new Scanner(System.in);
+    static Deck cards = new Deck();
+    static int deckPosition;
 
     enum choice {
         yes, no, card, pass, quit;
@@ -29,7 +31,21 @@ public class BlackJackApplication {
 
              -------------Maybe use enums to scan for common entry
 
-
+    [[[[[[[[[[[[[Requirements 2]]]]]]]]]]]]]
+            -Scanner voor options:
+                -Card
+                    - Person class. Drawn card enters array called Hand
+                    - Counter to follow which card was drawn last from deck, starting at 0
+                    - Add value to the value counter of a person
+                        - Already apply Ace worth of 1 or 11
+                            - To run through hand values. If ace in there count differently
+                -Pass
+                    - No more cards are drawn
+                -Quit
+                    - Quit exits entire game
+                -After having passed and round finished, new game begins automatically.
+                    - if deck counter reaches the 52 (51 of array) you want to grab a new shuffled deck and copy it over the current deck.
+                    - Empty player hands. players.clear
 
 
       */
@@ -47,9 +63,8 @@ public class BlackJackApplication {
         boolean choiceYN = stringScannerYesNo();
         if (choiceYN) {
             System.out.println("Beginning program");
-            Deck cards = new Deck();
             cards.shuffleDeck();
-            System.out.println(cards);
+            playRound();
         } else {
             System.out.println("No BlackJack");
         }
@@ -59,6 +74,51 @@ public class BlackJackApplication {
 
     }
 
+
+
+    void playRound() {
+        while (true) {
+            Player p1 = new Player();
+            String choice;
+            System.out.println(p1);
+            while (true) {
+                choice = choiceRound();
+                if (choice.equals("Card")) {
+                    p1.addCard();
+                    System.out.println(p1);
+                }
+                if (choice.equals("Pass")) {
+                    System.out.println("Final hand" + p1);
+                    break;
+                }
+                if (choice.equals("Quit")) {
+                    return;
+                }
+            }
+        }
+
+    }
+
+
+    String choiceRound() {
+        String choice = "";
+        System.out.println("Do you want a card, pass or quit playing?");
+        String input = reader.next();
+        while (!input.equalsIgnoreCase("Card")&& !input.equalsIgnoreCase("Pass") && !input.equalsIgnoreCase("Quit")) {
+            System.out.print("Enter a valid argument.\nDo you want a card, pass or quit playing");
+            input = reader.next();
+        }
+        if (input.equalsIgnoreCase("Card")) {
+            choice = "Card";
+        }
+        if (input.equalsIgnoreCase("Pass")) {
+            choice = "Pass";
+        }
+        if (input.equalsIgnoreCase("Quit")) {
+            choice = "Quit";
+        }
+        return choice;
+    }
 
 
 
@@ -76,6 +136,7 @@ public class BlackJackApplication {
 
         return yesorno;
     }
+
 
     Integer intScanner() {
         boolean good = false;

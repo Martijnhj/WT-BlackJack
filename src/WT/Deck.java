@@ -30,6 +30,10 @@ class Deck {
         }
     }
 
+    Card getCard(int location) {
+        return deck[location];
+    }
+
     @Override
     public String toString() {
         String fullDeck = "";
