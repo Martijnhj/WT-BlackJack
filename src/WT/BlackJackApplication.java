@@ -1,5 +1,7 @@
 package WT;
 
+import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,6 +15,7 @@ public class BlackJackApplication {
     static int deckPosition;
     ArrayList<Player> playersAtTable = new ArrayList<>();
     String choice;
+    Player dealer = new Player();
 
 
     //input arguments that are not reliant on case
@@ -55,19 +58,21 @@ public class BlackJackApplication {
               - Regels volgen
                 -Begin twee kaarten
                 - A's kan 1 of 11 punten zijn. Als boven 21 gaat veranderd dit in 1: 4 + A = 15 (5)
-                - Niet op tijd passen is beurt over/quit/speler is af
-                    -kan een timer importen. dan na x aantal seconden gaat een boolean naar true waardoor optie geskipped wordt
+
                 - Geen invoer dat programma doet vastlopen
 
 
 
       [[[[[[[[[[extra]]]]]]]]]]]]
+        - Niet op tijd passen is beurt over/pass.
         - Better visibility of table UI
+        - Slowed down print for dealer, so someone can follow along.
+
+        Possible future additions
         - multiple rounds
         - abilty to quit as 1 person
-
         - Betting? table doesn't know how much money someone has, so before round someone enters betting number.
-
+        - symbols maybe
 
       */
 
@@ -95,7 +100,7 @@ public class BlackJackApplication {
     }
 
     void gameLogic(){
-        Player dealer = new Player();
+
         System.out.print("How many players will be playing?: ");
         int amountPlayers = intScanner();
         for (int i=0;i<amountPlayers;i++) {
@@ -106,33 +111,50 @@ public class BlackJackApplication {
         }
         Card hiddenCard = cards.getCard(deckPosition);
         deckPosition++;
-        for (Player player: playersAtTable) {
-            System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
-            System.out.println(player + "\n");
-        }
-        System.out.println("Dealer");
-        System.out.println(dealer.getCard(0));
-        System.out.println("Hidden card");
-        System.out.println(dealer.getValueOfHand() + "\n");
+
+
+        System.out.println(printTable());
 
         playRoundPerson();
 
         dealer.addSpecificCard(hiddenCard);
-        System.out.println("Dealer\n" + dealer);
+        System.out.println(printTable());
+
         while (dealer.getValueOfHand()<17) {
+            try {
+                Thread.sleep(1000*3);
+            } catch (InterruptedException e) {
+                ///test
+            }
             dealer.addCard();
-            System.out.println("Dealer\n" + dealer);
+            System.out.println(printTable());
         }
 
         System.out.println("Winners are: ");
         for (Player player: playersAtTable) {
             if (player.getValueOfHand() > dealer.getValueOfHand() && player.getValueOfHand() <= 21 && dealer.getValueOfHand() <=21) {
-                System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
+                System.out.print("Player " + (playersAtTable.indexOf(player) + 1));
+                if (playersAtTable.indexOf(player)<playersAtTable.size()) {
+                    System.out.print(", ");
+                }
             } else if (dealer.getValueOfHand() > 21 && player.getValueOfHand()<=21) {
-                System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
+                System.out.print("Player " + (playersAtTable.indexOf(player) + 1));
+                if (playersAtTable.indexOf(player)<playersAtTable.size()) {
+                    System.out.print(", ");
+                }
             }
         }
 
+        System.out.println("\nPush: ");
+        for (Player player: playersAtTable) {
+            if (player.getValueOfHand() == dealer.getValueOfHand()) {
+                System.out.print("Player " + (playersAtTable.indexOf(player) + 1));
+                if (playersAtTable.indexOf(player)<playersAtTable.size()) {
+                    System.out.print(", ");
+                }
+            }
+
+        }
 
 
         /*
@@ -144,10 +166,10 @@ public class BlackJackApplication {
 
     void playRoundPerson(){
         for (Player player : playersAtTable) {
-            System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
-            System.out.println(player);
+
             while (true) {
-                System.out.println("Enter valid option");
+
+                System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
                 try {
                     timedScanner();
                 } catch (IOException e) {
@@ -156,14 +178,14 @@ public class BlackJackApplication {
 
                 if (choice.equalsIgnoreCase("Card")) {
                     player.addCard();
-                    System.out.println(player);
+                    System.out.println(printTable());
                 }
                 if (choice.equalsIgnoreCase("Pass") || choice.equals("")) {//or taking too long to decide
-                    System.out.println("Final hand\n" + player + "\n");
+                    System.out.println(printTable());
                     break;
                 }
                 if (player.getValueOfHand()>21) {
-                    System.out.println("You bust");
+                    System.out.println("You bust.\n");
                     break;
                 }
                 if (choice.equalsIgnoreCase("Quit")) {
@@ -173,9 +195,49 @@ public class BlackJackApplication {
         }
     }
 
+    String printTable() {
+        String tableInterface = "";
+        int biggestHand = 0;
+        for (Player player: playersAtTable) {
+            tableInterface += "Player " + (playersAtTable.indexOf(player) + 1 + "\t\t\t");
+            if (player.handSize() > biggestHand) {
+                biggestHand = player.handSize();
+            }
+        }
+
+        tableInterface += "\n";
 
 
-    String choiceRound() {
+
+        for (int i = 0; i<biggestHand; i++) {
+            for (Player player : playersAtTable) {
+                if (player.handSize()>=(i+1)) {
+                    tableInterface += player.getCard(i) + "\t\t";
+                } else {
+                    tableInterface += "\t\t\t\t\t";
+                }
+
+            }
+            tableInterface += "\n";
+        }
+
+        for (Player player : playersAtTable) {
+            tableInterface += player.getValueOfHand() + "\t\t\t\t\t";
+        }
+
+
+        tableInterface += "\n";
+
+        tableInterface += "\nDealer";
+        tableInterface += "\n" + dealer.getCard(0);
+        tableInterface += "\nHidden card";
+        tableInterface += "\n" + dealer.getValueOfHand() + "\n";
+        return tableInterface;
+    }
+
+
+
+    /*String choiceRound() {
         String choice = "";
         System.out.println("Do you want a card, pass or quit playing?");
         String input = reader.next();
@@ -194,6 +256,8 @@ public class BlackJackApplication {
         }
         return choice;
     }
+    Unused as of this moment
+     */
 
 
 
@@ -212,9 +276,9 @@ public class BlackJackApplication {
         return yesorno;
     }
 
-    void timedScanner() throws IOException {
-
-        int x = 10;
+    void timedScanner() throws IOException { //Issue: restarts timer every time you enter something that doesn't make sense
+        int x = 15;
+        System.out.println("Enter valid option within the timeframe of " + x + " Seconds. Do you want a card, pass or quit the game?: ");
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         long startTime = System.currentTimeMillis();
         while ((System.currentTimeMillis() - startTime) < x * 1000
@@ -224,7 +288,7 @@ public class BlackJackApplication {
         if (in.ready()) {
             choice = in.readLine();
         } else {
-            System.out.println("You did not enter data");
+            System.out.println("You automatically passed because time ran out");
             choice = "";
         }
     }

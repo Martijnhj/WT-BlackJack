@@ -3,7 +3,7 @@ package WT;
 import java.util.ArrayList;
 
 public class Player {
-    private ArrayList<Card> hand = new ArrayList<>();
+    private ArrayList<Card> hand = new ArrayList<>(10);
 
 
     Player() {
@@ -31,6 +31,10 @@ public class Player {
 
     void addSpecificCard(Card card) {
         hand.add(card);
+    }
+
+    int handSize() {
+        return hand.size();
     }
 
 
