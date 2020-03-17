@@ -3,11 +3,10 @@ package WT;
 import java.util.ArrayList;
 
 public class Player {
-    private ArrayList<Card> hand = new ArrayList<>();
+    private ArrayList<Card> hand = new ArrayList<>(10);
 
 
     Player() {
-        addCard();
         addCard();
     }
 
@@ -24,6 +23,18 @@ public class Player {
             BlackJackApplication.cards.shuffleDeck();
         }
         //sorts Ace as last card so getValueOfHand function works it during adding
+    }
+
+    Card getCard(int i) {
+        return hand.get(i);
+    }
+
+    void addSpecificCard(Card card) {
+        hand.add(card);
+    }
+
+    int handSize() {
+        return hand.size();
     }
 
 
@@ -46,6 +57,10 @@ public class Player {
 
         }
         return value;
+    }
+
+    void emptyHand(){
+        hand.clear();
     }
 
     @Override
