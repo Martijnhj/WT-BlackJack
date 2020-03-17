@@ -8,7 +8,6 @@ public class Player {
 
     Player() {
         addCard();
-        addCard();
     }
 
     void addCard() {
@@ -24,6 +23,14 @@ public class Player {
             BlackJackApplication.cards.shuffleDeck();
         }
         //sorts Ace as last card so getValueOfHand function works it during adding
+    }
+
+    Card getCard(int i) {
+        return hand.get(i);
+    }
+
+    void addSpecificCard(Card card) {
+        hand.add(card);
     }
 
 
@@ -46,6 +53,10 @@ public class Player {
 
         }
         return value;
+    }
+
+    void emptyHand(){
+        hand.clear();
     }
 
     @Override

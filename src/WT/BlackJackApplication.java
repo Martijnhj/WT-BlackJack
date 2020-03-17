@@ -1,16 +1,19 @@
 package WT;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class BlackJackApplication {
 
-    static Scanner reader = new Scanner(System.in);
+    Scanner reader = new Scanner(System.in);
     static Deck cards = new Deck();
     static int deckPosition;
+    ArrayList<Player> playersAtTable = new ArrayList<>();
+    String choice;
 
-    enum choice {
-        yes, no, card, pass, quit;
-    }
 
     //input arguments that are not reliant on case
     //final static String yesArgument = "^(?i)yes$";
@@ -48,23 +51,40 @@ public class BlackJackApplication {
                     - Empty player hands. players.clear
 
 
+      [[[[[[[[[[[[[Requirements 3]]]]]]]]]]]]]
+              - Regels volgen
+                -Begin twee kaarten
+                - A's kan 1 of 11 punten zijn. Als boven 21 gaat veranderd dit in 1: 4 + A = 15 (5)
+                - Niet op tijd passen is beurt over/quit/speler is af
+                    -kan een timer importen. dan na x aantal seconden gaat een boolean naar true waardoor optie geskipped wordt
+                - Geen invoer dat programma doet vastlopen
+
+
+
+      [[[[[[[[[[extra]]]]]]]]]]]]
+        - Better visibility of table UI
+        - multiple rounds
+        - abilty to quit as 1 person
+
+        - Betting? table doesn't know how much money someone has, so before round someone enters betting number.
+
+
       */
 
 
 
     public static void main (String[] args) {
-
         new BlackJackApplication().start();
     }
 
-    void start() {
+    void start(){
 
         System.out.print("This is BlackJack. Do you want to play? Enter yes or no: ");
         boolean choiceYN = stringScannerYesNo();
         if (choiceYN) {
             System.out.println("Beginning program");
             cards.shuffleDeck();
-            playRound();
+            gameLogic();
         } else {
             System.out.println("No BlackJack");
         }
@@ -74,30 +94,85 @@ public class BlackJackApplication {
 
     }
 
+    void gameLogic(){
+        Player dealer = new Player();
+        System.out.print("How many players will be playing?: ");
+        int amountPlayers = intScanner();
+        for (int i=0;i<amountPlayers;i++) {
+            playersAtTable.add(new Player());
+        }
+        for (Player player : playersAtTable) {
+            player.addCard();
+        }
+        Card hiddenCard = cards.getCard(deckPosition);
+        deckPosition++;
+        for (Player player: playersAtTable) {
+            System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
+            System.out.println(player + "\n");
+        }
+        System.out.println("Dealer");
+        System.out.println(dealer.getCard(0));
+        System.out.println("Hidden card");
+        System.out.println(dealer.getValueOfHand() + "\n");
+
+        playRoundPerson();
+
+        dealer.addSpecificCard(hiddenCard);
+        System.out.println("Dealer\n" + dealer);
+        while (dealer.getValueOfHand()<17) {
+            dealer.addCard();
+            System.out.println("Dealer\n" + dealer);
+        }
+
+        System.out.println("Winners are: ");
+        for (Player player: playersAtTable) {
+            if (player.getValueOfHand() > dealer.getValueOfHand() && player.getValueOfHand() <= 21 && dealer.getValueOfHand() <=21) {
+                System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
+            } else if (dealer.getValueOfHand() > 21 && player.getValueOfHand()<=21) {
+                System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
+            }
+        }
 
 
-    void playRound() {
-        while (true) {
-            Player p1 = new Player();
-            String choice;
-            System.out.println(p1);
+
+        /*
+            go's round giving everyone 1 card + dealer. Then go's round again giving everyone the second card with the dealer placing their's upside down.
+         */
+    }
+
+
+
+    void playRoundPerson(){
+        for (Player player : playersAtTable) {
+            System.out.println("Player " + (playersAtTable.indexOf(player) + 1));
+            System.out.println(player);
             while (true) {
-                choice = choiceRound();
-                if (choice.equals("Card")) {
-                    p1.addCard();
-                    System.out.println(p1);
+                System.out.println("Enter valid option");
+                try {
+                    timedScanner();
+                } catch (IOException e) {
+                    //Can never happen
                 }
-                if (choice.equals("Pass")) {
-                    System.out.println("Final hand" + p1);
+
+                if (choice.equalsIgnoreCase("Card")) {
+                    player.addCard();
+                    System.out.println(player);
+                }
+                if (choice.equalsIgnoreCase("Pass") || choice.equals("")) {//or taking too long to decide
+                    System.out.println("Final hand\n" + player + "\n");
                     break;
                 }
-                if (choice.equals("Quit")) {
+                if (player.getValueOfHand()>21) {
+                    System.out.println("You bust");
+                    break;
+                }
+                if (choice.equalsIgnoreCase("Quit")) {
                     return;
                 }
             }
         }
-
     }
+
 
 
     String choiceRound() {
@@ -137,6 +212,22 @@ public class BlackJackApplication {
         return yesorno;
     }
 
+    void timedScanner() throws IOException {
+
+        int x = 10;
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        long startTime = System.currentTimeMillis();
+        while ((System.currentTimeMillis() - startTime) < x * 1000
+                && !in.ready()) {
+        }
+
+        if (in.ready()) {
+            choice = in.readLine();
+        } else {
+            System.out.println("You did not enter data");
+            choice = "";
+        }
+    }
 
     Integer intScanner() {
         boolean good = false;
